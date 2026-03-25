@@ -5,8 +5,8 @@
     --panel-border: rgba(255, 255, 255, 0.08);
     --text: #f8fafc;
     --muted: #94a3b8;
-    --accent: #c026d3;
-    --accent-2: #a855f7;
+    --accent: #2563eb;
+    --accent-2: #06b6d4;
 }
 
 * {
@@ -23,10 +23,113 @@ body {
     margin: 0;
     font-family: Inter, Arial, sans-serif;
     background:
-        radial-gradient(circle at top right, rgba(192, 38, 211, 0.14), transparent 28%),
+        radial-gradient(circle at top right, rgba(37, 99, 235, 0.16), transparent 28%),
         radial-gradient(circle at left bottom, rgba(56, 189, 248, 0.08), transparent 26%),
         var(--bg);
     color: var(--text);
+}
+
+body.light-theme {
+    --bg: #f4f7ff;
+    --panel: #ffffff;
+    --panel-soft: #f8faff;
+    --panel-border: rgba(15, 23, 42, 0.12);
+    --text: #0f172a;
+    --muted: #475569;
+    --accent: #2563eb;
+    --accent-2: #0ea5e9;
+    background:
+        radial-gradient(circle at top right, rgba(37, 99, 235, 0.14), transparent 28%),
+        radial-gradient(circle at left bottom, rgba(59, 130, 246, 0.1), transparent 26%),
+        var(--bg);
+    color: var(--text);
+}
+
+body.light-theme .cyber-navbar {
+    background: linear-gradient(90deg, #ffffff 0%, #f8faff 100%);
+    border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+    box-shadow: 0 10px 22px rgba(15, 23, 42, 0.08);
+}
+
+body.light-theme .cyber-icon-button {
+    background: #ffffff;
+    border-color: rgba(15, 23, 42, 0.1);
+    color: #0f172a;
+}
+
+body.light-theme .sidebar {
+    background: #ffffff;
+    border-right: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+body.light-theme .sidebar-brand {
+    color: #1d4ed8;
+}
+
+body.light-theme .sidebar-link {
+    color: #334155;
+}
+
+body.light-theme .sidebar-link:hover {
+    background: rgba(148, 163, 184, 0.18);
+    color: #0f172a;
+}
+
+body.light-theme .cyber-dashboard,
+body.light-theme .cyber-section-card {
+    background: rgba(255, 255, 255, 0.88);
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+}
+
+body.light-theme .stat-card,
+body.light-theme .dashboard-panel,
+body.light-theme .crud-table-wrap,
+body.light-theme .crud-modal-panel {
+    background: #ffffff;
+    border-color: rgba(15, 23, 42, 0.1);
+    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
+}
+
+body.light-theme .dashboard-panel-header h3,
+body.light-theme .stat-card-value,
+body.light-theme .distribution-ring-center,
+body.light-theme .crud-table td,
+body.light-theme .crud-modal-panel h2,
+body.light-theme .cyber-navbar-title,
+body.light-theme .cyber-page-title,
+body.light-theme .cyber-standalone-title {
+    color: #0f172a;
+}
+
+body.light-theme .crud-table th {
+    color: #2563eb;
+}
+
+body.light-theme .crud-table tbody tr:hover {
+    background: rgba(37, 99, 235, 0.08);
+}
+
+body.light-theme .crud-field span,
+body.light-theme .cyber-page-kicker,
+body.light-theme .cyber-navbar-kicker,
+body.light-theme .dashboard-panel-header span {
+    color: #64748b;
+}
+
+body.light-theme .crud-field input,
+body.light-theme .crud-field select {
+    background: #ffffff;
+    border-color: rgba(15, 23, 42, 0.15);
+    color: #0f172a;
+}
+
+body.light-theme .crud-modal-overlay {
+    background: rgba(148, 163, 184, 0.35);
+}
+
+body.light-theme .footer {
+    color: #475569;
 }
 
 a {
@@ -114,9 +217,9 @@ p {
 .cyber-score-pill {
     padding: 10px 14px;
     border-radius: 999px;
-    background: rgba(192, 38, 211, 0.12);
-    border: 1px solid rgba(192, 38, 211, 0.28);
-    color: #f5d0fe;
+    background: rgba(37, 99, 235, 0.12);
+    border: 1px solid rgba(37, 99, 235, 0.28);
+    color: #dbeafe;
     font-size: 13px;
     white-space: nowrap;
 }
@@ -132,7 +235,7 @@ p {
     font-weight: 700;
     color: #fff;
     background: linear-gradient(135deg, var(--accent), var(--accent-2));
-    box-shadow: 0 0 20px rgba(192, 38, 211, 0.35);
+    box-shadow: 0 0 20px rgba(37, 99, 235, 0.35);
 }
 
 .main-content {
@@ -216,8 +319,8 @@ p {
 
 .sidebar-link-active {
     color: #fff;
-    background: linear-gradient(90deg, rgba(192, 38, 211, 0.9), rgba(168, 85, 247, 0.9));
-    box-shadow: 0 10px 25px rgba(168, 85, 247, 0.28);
+    background: linear-gradient(90deg, rgba(37, 99, 235, 0.9), rgba(14, 165, 233, 0.9));
+    box-shadow: 0 10px 25px rgba(37, 99, 235, 0.28);
 }
 
 .sidebar-link-icon {
@@ -258,9 +361,9 @@ p {
     padding: 7px 12px;
     border-radius: 999px;
     margin-bottom: 14px;
-    background: rgba(192, 38, 211, 0.12);
-    color: #f5d0fe;
-    border: 1px solid rgba(192, 38, 211, 0.26);
+    background: rgba(37, 99, 235, 0.12);
+    color: #dbeafe;
+    border: 1px solid rgba(37, 99, 235, 0.26);
     font-size: 12px;
     font-weight: 700;
 }
@@ -447,8 +550,8 @@ p {
 .activity-bars span {
     display: block;
     border-radius: 14px 14px 6px 6px;
-    background: linear-gradient(180deg, rgba(192, 38, 211, 0.95), rgba(59, 130, 246, 0.7));
-    box-shadow: 0 0 20px rgba(192, 38, 211, 0.22);
+    background: linear-gradient(180deg, rgba(37, 99, 235, 0.95), rgba(14, 165, 233, 0.75));
+    box-shadow: 0 0 20px rgba(37, 99, 235, 0.22);
 }
 
 .distribution-shell {
@@ -463,11 +566,11 @@ p {
     width: 160px;
     height: 160px;
     border-radius: 50%;
-    background: conic-gradient(#c026d3 0 38%, #22d3ee 38% 72%, #f59e0b 72% 100%);
+    background: conic-gradient(#2563eb 0 38%, #06b6d4 38% 72%, #f59e0b 72% 100%);
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 0 30px rgba(192, 38, 211, 0.2);
+    box-shadow: 0 0 30px rgba(37, 99, 235, 0.2);
 }
 
 .distribution-ring-center {
@@ -503,7 +606,7 @@ p {
 }
 
 .legend-dot-purple {
-    background: #c026d3;
+    background: #2563eb;
 }
 
 .legend-dot-cyan {
@@ -540,13 +643,13 @@ p {
 }
 
 .crud-add-button {
-    background: linear-gradient(90deg, rgba(192, 38, 211, 0.92), rgba(244, 63, 94, 0.9));
-    box-shadow: 0 8px 22px rgba(244, 63, 94, 0.24);
+    background: linear-gradient(90deg, rgba(37, 99, 235, 0.92), rgba(14, 165, 233, 0.9));
+    box-shadow: 0 8px 22px rgba(37, 99, 235, 0.24);
 }
 
 .crud-add-button:hover {
     transform: translateY(-1px);
-    box-shadow: 0 12px 26px rgba(192, 38, 211, 0.28);
+    box-shadow: 0 12px 26px rgba(37, 99, 235, 0.28);
 }
 
 .crud-action-button {

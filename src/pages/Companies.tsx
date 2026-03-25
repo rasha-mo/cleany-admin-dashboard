@@ -7,6 +7,7 @@ import {
     getCompanies,
     updateCompany,
 } from '../api/endpoints/companies';
+import { getCategoryCompanies } from '../api/endpoints/categoryCompanies';
 
 type CompanyStatus = 'Active' | 'Inactive';
 
@@ -16,6 +17,13 @@ type Company = {
     email: string;
     phone: string;
     status: CompanyStatus;
+    categoryCompanyId?: number | null;
+    categoryCompanyName?: string;
+};
+
+type CompanyCategory = {
+    id: number;
+    name: string;
 };
 
 type CompanyFormState = {
@@ -23,6 +31,7 @@ type CompanyFormState = {
     email: string;
     phone: string;
     status: CompanyStatus;
+    categoryCompanyId: string;
 };
 
 type ToastType = 'success' | 'error';
@@ -32,11 +41,13 @@ const emptyForm: CompanyFormState = {
     email: '',
     phone: '',
     status: 'Active',
+    categoryCompanyId: '',
 };
 
 const Companies: React.FC = () => {
     const navigate = useNavigate();
     const [data, setData] = useState<Company[]>([]);
+    const [companyCategories, setCompanyCategories] = useState<CompanyCategory[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -129,8 +140,19 @@ const Companies: React.FC = () => {
         }
     };
 
+    const fetchCompanyCategories = async () => {
+        try {
+            const { raw, list } = await getCategoryCompanies();
+            console.log('Category companies response:', raw);
+            setCompanyCategories(list as CompanyCategory[]);
+        } catch (apiError) {
+            handleApiError(apiError);
+        }
+    };
+
     useEffect(() => {
         fetchCompanies();
+        fetchCompanyCategories();
     }, []);
 
     const openAddModal = () => {
@@ -146,6 +168,7 @@ const Companies: React.FC = () => {
             email: company.email,
             phone: company.phone,
             status: company.status,
+            categoryCompanyId: company.categoryCompanyId ? String(company.categoryCompanyId) : '',
         });
         setIsModalOpen(true);
     };
@@ -169,6 +192,12 @@ const Companies: React.FC = () => {
             email: formState.email.trim(),
             phone: formState.phone.trim(),
             status: formState.status,
+            ...(formState.categoryCompanyId
+                ? {
+                      category_company: Number(formState.categoryCompanyId),
+                      category_company_id: Number(formState.categoryCompanyId),
+                  }
+                : {}),
         };
 
         if (!payload.name || !payload.email || !payload.phone) {
@@ -226,6 +255,7 @@ const Companies: React.FC = () => {
                             <th>Company Name</th>
                             <th>Email</th>
                             <th>Phone</th>
+                            <th>Category</th>
                             <th>Status</th>
                             <th>Actions</th>
                         </tr>
@@ -237,6 +267,7 @@ const Companies: React.FC = () => {
                                 <td>{company.name}</td>
                                 <td>{company.email}</td>
                                 <td>{company.phone}</td>
+                                <td>{company.categoryCompanyName || 'Unassigned'}</td>
                                 <td>
                                     <span
                                         className={`crud-status-badge ${
@@ -341,6 +372,22 @@ const Companies: React.FC = () => {
                                 <select name="status" value={formState.status} onChange={handleInputChange}>
                                     <option value="Active">Active</option>
                                     <option value="Inactive">Inactive</option>
+                                </select>
+                            </label>
+
+                            <label className="crud-field">
+                                <span>Company Category</span>
+                                <select
+                                    name="categoryCompanyId"
+                                    value={formState.categoryCompanyId}
+                                    onChange={handleInputChange}
+                                >
+                                    <option value="">Select category</option>
+                                    {companyCategories.map((category) => (
+                                        <option key={category.id} value={category.id}>
+                                            {category.name}
+                                        </option>
+                                    ))}
                                 </select>
                             </label>
 

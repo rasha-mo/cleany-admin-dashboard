@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
@@ -8,12 +8,32 @@ const pageTitles = {
   '/orders': 'Orders',
   '/companies': 'Companies',
   '/categories': 'Categories',
+  '/offers': 'Offers',
   '/users': 'Users',
+  '/login': 'Login',
 };
 
 const Navbar = () => {
   const location = useLocation();
   const title = pageTitles[location.pathname] || 'Dashboard';
+  const [isLightTheme, setIsLightTheme] = useState(() => {
+    const savedTheme = localStorage.getItem('dashboard-theme');
+    return savedTheme ? savedTheme === 'light' : true;
+  });
+
+  useEffect(() => {
+    if (isLightTheme) {
+      document.body.classList.add('light-theme');
+      localStorage.setItem('dashboard-theme', 'light');
+    } else {
+      document.body.classList.remove('light-theme');
+      localStorage.setItem('dashboard-theme', 'dark');
+    }
+  }, [isLightTheme]);
+
+  const toggleTheme = () => {
+    setIsLightTheme((prev) => !prev);
+  };
 
   return (
     <header className="cyber-navbar" aria-label="Top navigation">
@@ -28,6 +48,15 @@ const Navbar = () => {
       </div>
 
       <div className="cyber-navbar-right">
+        <button
+          className="cyber-icon-button"
+          type="button"
+          aria-label="Toggle light and dark theme"
+          onClick={toggleTheme}
+          title={isLightTheme ? 'Switch to dark theme' : 'Switch to light theme'}
+        >
+          {isLightTheme ? '🌙' : '☀'}
+        </button>
         <button className="cyber-icon-button" type="button" aria-label="Settings">
           ⚙
         </button>

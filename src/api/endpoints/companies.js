@@ -35,12 +35,29 @@ const readText = (value, fallback = '-') => {
 
 const toCompany = (item, index) => {
     const record = item && typeof item === 'object' ? item : {};
+    const nestedCategory =
+        record.category_company && typeof record.category_company === 'object'
+            ? record.category_company
+            : null;
+
     return {
         id: record.id || record.company_id || record.pk || index + 1,
         name: readText(record.name ?? record.company_name ?? record.title),
         email: readText(record.email ?? record.company_email ?? record.mail),
         phone: readText(record.phone ?? record.phone_number ?? record.mobile),
         status: normalizeStatus(record.status ?? record.is_active ?? record.active),
+        categoryCompanyId:
+            record.category_company_id ||
+            record.category_company ||
+            (nestedCategory ? nestedCategory.id : null) ||
+            null,
+        categoryCompanyName:
+            readText(
+                record.category_company_name ||
+                    record.category_name ||
+                    (nestedCategory ? nestedCategory.name : null),
+                'Unassigned',
+            ),
     };
 };
 
