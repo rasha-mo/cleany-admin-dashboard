@@ -8,8 +8,8 @@
   "scripts": {
     "start": "react-scripts start",
     "dev": "set NODE_OPTIONS=--openssl-legacy-provider && react-scripts start",
-    "build": "react-scripts build",
-    "build:vercel": "NODE_OPTIONS=--openssl-legacy-provider react-scripts build",
+    "build": "node scripts/build.js",
+    "build:vercel": "node scripts/build.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

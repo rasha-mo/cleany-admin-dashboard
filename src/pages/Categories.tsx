@@ -120,8 +120,6 @@ const Categories: React.FC = () => {
                 return;
             }
 
-            console.error('Categories error:', apiError.response?.data || apiError.message);
-
             setError(detailMessage);
 
             if (status === 404 || status === 500) {
@@ -141,8 +139,7 @@ const Categories: React.FC = () => {
         setLoading(true);
         setError(null);
         try {
-            const { raw, list } = await getCategories();
-            console.log('Categories response:', raw);
+            const { list } = await getCategories();
             setData(list);
         } catch (apiError) {
             handleApiError(apiError);
@@ -154,8 +151,7 @@ const Categories: React.FC = () => {
     const fetchCompanyCategories = async () => {
         setCompanyCategoriesLoading(true);
         try {
-            const { raw, list } = await getCategoryCompanies();
-            console.log('Company categories response:', raw);
+            const { list } = await getCategoryCompanies();
             setCompanyCategories(list as CompanyCategory[]);
         } catch (apiError) {
             handleApiError(apiError);

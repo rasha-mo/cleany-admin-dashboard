@@ -101,8 +101,6 @@ const Users: React.FC = () => {
                 return;
             }
 
-            console.error('Users error:', apiError.response?.data || apiError.message);
-
             setError(detailMessage);
 
             if (status === 404 || status === 500) {
@@ -122,8 +120,7 @@ const Users: React.FC = () => {
         setLoading(true);
         setError(null);
         try {
-            const { raw, list } = await getUsers();
-            console.log('Users response:', raw);
+            const { list } = await getUsers();
             setData(list as User[]);
         } catch (apiError) {
             handleApiError(apiError);
