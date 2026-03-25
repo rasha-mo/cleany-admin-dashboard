@@ -10,6 +10,9 @@ const fallbackCategoryCompanies = [
     { id: 4, name: 'Technology' },
 ];
 
+let fallbackMode = false;
+let localCategoryCompaniesStore = [...fallbackCategoryCompanies];
+
 const normalizeCategory = (item, index) => {
     const record = item && typeof item === 'object' ? item : {};
     return {
@@ -50,6 +53,13 @@ const extractCategoryCompaniesArray = (payload) => {
 };
 
 export const getCategoryCompanies = async () => {
+    if (fallbackMode) {
+        return {
+            raw: { local: true },
+            list: [...localCategoryCompaniesStore],
+        };
+    }
+
     try {
         const response = await axiosInstance.get('/category_companies/');
         const list = extractCategoryCompaniesArray(response.data).map((item, index) =>
@@ -62,10 +72,70 @@ export const getCategoryCompanies = async () => {
         };
     } catch (error) {
         if (axios.isAxiosError(error) && error.response?.status === 404) {
+            fallbackMode = true;
             return {
                 raw: { local: true, reason: 'category-companies-endpoint-missing' },
-                list: [...fallbackCategoryCompanies],
+                list: [...localCategoryCompaniesStore],
             };
+        }
+        throw error;
+    }
+};
+
+export const createCategoryCompany = async (payload) => {
+    if (fallbackMode) {
+        const next = {
+            id: localCategoryCompaniesStore.length
+                ? Math.max(...localCategoryCompaniesStore.map((item) => item.id)) + 1
+                : 1,
+            name: payload.name,
+        };
+        localCategoryCompaniesStore = [...localCategoryCompaniesStore, next];
+        return next;
+    }
+
+    try {
+        return await axiosInstance.post('/category_companies/', payload);
+    } catch (error) {
+        if (axios.isAxiosError(error) && error.response?.status === 404) {
+            fallbackMode = true;
+            return createCategoryCompany(payload);
+        }
+        throw error;
+    }
+};
+
+export const updateCategoryCompany = async (id, payload) => {
+    if (fallbackMode) {
+        localCategoryCompaniesStore = localCategoryCompaniesStore.map((item) =>
+            item.id === id ? { ...item, ...payload, id } : item,
+        );
+        return;
+    }
+
+    try {
+        return await axiosInstance.put(`/category_companies/${id}/`, payload);
+    } catch (error) {
+        if (axios.isAxiosError(error) && error.response?.status === 404) {
+            fallbackMode = true;
+            return updateCategoryCompany(id, payload);
+        }
+        throw error;
+    }
+};
+
+export const deleteCategoryCompany = async (id) => {
+    if (fallbackMode) {
+        localCategoryCompaniesStore = localCategoryCompaniesStore.filter((item) => item.id !== id);
+        return;
+    }
+
+    try {
+        return await axiosInstance.delete(`/category_companies/${id}/`);
+    } catch (error) {
+        if (axios.isAxiosError(error) && error.response?.status === 404) {
+            fallbackMode = true;
+            return deleteCategoryCompany(id);
         }
         throw error;
     }

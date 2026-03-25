@@ -12,13 +12,10 @@ const navigationGroups = [
             { label: 'Orders', path: '/orders', icon: '📦' },
             { label: 'Companies', path: '/companies', icon: '🏢' },
             { label: 'Categories', path: '/categories', icon: '🏷' },
+            { label: 'Users', path: '/users', icon: '👤' },
             { label: 'Offers', path: '/offers', icon: '🎁' },
         ],
-    },
-    {
-        label: 'Blocked Area',
-        items: [{ label: 'Users', path: '/users', icon: '👤' }],
-    },
+    }
 ];
 
 const Sidebar: React.FC = () => {

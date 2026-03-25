@@ -7,6 +7,12 @@ import {
     getCategories,
     updateCategory,
 } from '../api/endpoints/categories';
+import {
+    createCategoryCompany,
+    deleteCategoryCompany,
+    getCategoryCompanies,
+    updateCategoryCompany,
+} from '../api/endpoints/categoryCompanies';
 
 type Category = {
     id: number;
@@ -22,6 +28,11 @@ type CategoryFormState = {
     iconFile: File | null;
 };
 
+type CompanyCategory = {
+    id: number;
+    name: string;
+};
+
 type ToastType = 'success' | 'error';
 
 const emptyForm: CategoryFormState = {
@@ -35,9 +46,14 @@ const Categories: React.FC = () => {
     const navigate = useNavigate();
     const [data, setData] = useState<Category[]>([]);
     const [loading, setLoading] = useState(true);
+    const [companyCategoriesLoading, setCompanyCategoriesLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingId, setEditingId] = useState<number | null>(null);
+    const [companyCategories, setCompanyCategories] = useState<CompanyCategory[]>([]);
+    const [isCompanyCategoryModalOpen, setIsCompanyCategoryModalOpen] = useState(false);
+    const [editingCompanyCategoryId, setEditingCompanyCategoryId] = useState<number | null>(null);
+    const [companyCategoryName, setCompanyCategoryName] = useState('');
     const [formState, setFormState] = useState<CategoryFormState>(emptyForm);
     const [toastMessage, setToastMessage] = useState('');
     const [toastType, setToastType] = useState<ToastType>('success');
@@ -54,6 +70,11 @@ const Categories: React.FC = () => {
     const modalTitle = useMemo(
         () => (editingId === null ? 'Add Category' : 'Edit Category'),
         [editingId],
+    );
+
+    const companyCategoryModalTitle = useMemo(
+        () => (editingCompanyCategoryId === null ? 'Add Company Category' : 'Edit Company Category'),
+        [editingCompanyCategoryId],
     );
 
     const showToast = (message: string, type: ToastType = 'success') => {
@@ -130,8 +151,22 @@ const Categories: React.FC = () => {
         }
     };
 
+    const fetchCompanyCategories = async () => {
+        setCompanyCategoriesLoading(true);
+        try {
+            const { raw, list } = await getCategoryCompanies();
+            console.log('Company categories response:', raw);
+            setCompanyCategories(list as CompanyCategory[]);
+        } catch (apiError) {
+            handleApiError(apiError);
+        } finally {
+            setCompanyCategoriesLoading(false);
+        }
+    };
+
     useEffect(() => {
         fetchCategories();
+        fetchCompanyCategories();
     }, []);
 
     const openAddModal = () => {
@@ -159,6 +194,24 @@ const Categories: React.FC = () => {
         setIsModalOpen(false);
         setEditingId(null);
         setFormState(emptyForm);
+    };
+
+    const openAddCompanyCategoryModal = () => {
+        setEditingCompanyCategoryId(null);
+        setCompanyCategoryName('');
+        setIsCompanyCategoryModalOpen(true);
+    };
+
+    const openEditCompanyCategoryModal = (category: CompanyCategory) => {
+        setEditingCompanyCategoryId(category.id);
+        setCompanyCategoryName(category.name);
+        setIsCompanyCategoryModalOpen(true);
+    };
+
+    const closeCompanyCategoryModal = () => {
+        setIsCompanyCategoryModalOpen(false);
+        setEditingCompanyCategoryId(null);
+        setCompanyCategoryName('');
     };
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -231,6 +284,45 @@ const Categories: React.FC = () => {
         }
     };
 
+    const handleCompanyCategorySubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
+        const trimmedName = companyCategoryName.trim();
+        if (!trimmedName) {
+            return;
+        }
+
+        try {
+            if (editingCompanyCategoryId === null) {
+                await createCategoryCompany({ name: trimmedName });
+                showToast('Company category added successfully');
+            } else {
+                await updateCategoryCompany(editingCompanyCategoryId, { name: trimmedName });
+                showToast('Company category updated successfully');
+            }
+
+            closeCompanyCategoryModal();
+            await fetchCompanyCategories();
+        } catch (apiError) {
+            handleApiError(apiError);
+        }
+    };
+
+    const handleDeleteCompanyCategory = async (category: CompanyCategory) => {
+        const confirmed = window.confirm(`Delete company category "${category.name}"?`);
+        if (!confirmed) {
+            return;
+        }
+
+        try {
+            await deleteCategoryCompany(category.id);
+            showToast('Company category deleted successfully');
+            await fetchCompanyCategories();
+        } catch (apiError) {
+            handleApiError(apiError);
+        }
+    };
+
     return (
         <section className="cyber-section-card">
             <div className="crud-page-header">
@@ -294,7 +386,62 @@ const Categories: React.FC = () => {
                 </table>
             </div>
 
+            <div className="crud-subsection">
+                <div className="crud-page-header">
+                    <div>
+                        <p className="cyber-page-kicker">Linked Data</p>
+                        <h2 className="cyber-standalone-title">Company Categories</h2>
+                    </div>
+                    <button
+                        type="button"
+                        className="crud-add-button"
+                        onClick={openAddCompanyCategoryModal}
+                    >
+                        Add Company Category
+                    </button>
+                </div>
+
+                <div className="crud-table-wrap">
+                    <table className="crud-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {companyCategories.map((category) => (
+                                <tr key={`company-category-${category.id}`}>
+                                    <td>{category.id}</td>
+                                    <td>{category.name}</td>
+                                    <td>
+                                        <div className="crud-actions">
+                                            <button
+                                                type="button"
+                                                className="crud-action-button"
+                                                onClick={() => openEditCompanyCategoryModal(category)}
+                                            >
+                                                Edit
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className="crud-action-button crud-action-danger"
+                                                onClick={() => handleDeleteCompanyCategory(category)}
+                                            >
+                                                Delete
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
             {loading ? <div className="crud-loading">Loading categories...</div> : null}
+            {companyCategoriesLoading ? <div className="crud-loading">Loading company categories...</div> : null}
             {error ? <div className="crud-error-inline">{error}</div> : null}
 
             {isModalOpen ? (
@@ -367,6 +514,63 @@ const Categories: React.FC = () => {
                                 </button>
                                 <button type="submit" className="crud-add-button">
                                     {editingId === null ? 'Create Category' : 'Save Changes'}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            ) : null}
+
+            {isCompanyCategoryModalOpen ? (
+                <div
+                    className="crud-modal-overlay"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label={companyCategoryModalTitle}
+                    onMouseDown={(event) => {
+                        if (event.target === event.currentTarget) {
+                            closeCompanyCategoryModal();
+                        }
+                    }}
+                >
+                    <div className="crud-modal-panel">
+                        <div className="crud-modal-head">
+                            <h2>{companyCategoryModalTitle}</h2>
+                            <button
+                                type="button"
+                                className="crud-modal-close"
+                                onClick={closeCompanyCategoryModal}
+                                aria-label="Close modal"
+                            >
+                                X
+                            </button>
+                        </div>
+
+                        <form className="crud-form" onSubmit={handleCompanyCategorySubmit}>
+                            <label className="crud-field">
+                                <span>Name</span>
+                                <input
+                                    type="text"
+                                    name="name"
+                                    value={companyCategoryName}
+                                    onChange={(event) => setCompanyCategoryName(event.target.value)}
+                                    placeholder="Enter company category name"
+                                    required
+                                />
+                            </label>
+
+                            <div className="crud-modal-actions">
+                                <button
+                                    type="button"
+                                    className="crud-action-button"
+                                    onClick={closeCompanyCategoryModal}
+                                >
+                                    Cancel
+                                </button>
+                                <button type="submit" className="crud-add-button">
+                                    {editingCompanyCategoryId === null
+                                        ? 'Create Company Category'
+                                        : 'Save Changes'}
                                 </button>
                             </div>
                         </form>

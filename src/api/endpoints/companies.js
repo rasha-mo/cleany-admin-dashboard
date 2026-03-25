@@ -104,7 +104,7 @@ export const getCompanies = async () => {
     }
 
     try {
-        const response = await axiosInstance.get('/companies/');
+        const response = await axiosInstance.get('/companies');
         const rawList = extractCompaniesArray(response.data);
         return {
             raw: response.data,
@@ -135,7 +135,7 @@ export const createCompany = async (payload) => {
     }
 
     try {
-        return await axiosInstance.post('/companies/', payload);
+        return await axiosInstance.post('/companies', payload);
     } catch (error) {
         if (axios.isAxiosError(error) && error.response?.status === 404) {
             fallbackMode = true;
@@ -154,7 +154,7 @@ export const updateCompany = async (id, payload) => {
     }
 
     try {
-        return await axiosInstance.put(`/companies/${id}/`, payload);
+        return await axiosInstance.put(`/companies/${id}`, payload);
     } catch (error) {
         if (axios.isAxiosError(error) && error.response?.status === 404) {
             fallbackMode = true;
@@ -171,7 +171,7 @@ export const deleteCompany = async (id) => {
     }
 
     try {
-        return await axiosInstance.delete(`/companies/${id}/`);
+        return await axiosInstance.delete(`/companies/${id}`);
     } catch (error) {
         if (axios.isAxiosError(error) && error.response?.status === 404) {
             fallbackMode = true;
