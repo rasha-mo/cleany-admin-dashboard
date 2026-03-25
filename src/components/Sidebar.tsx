@@ -1,0 +1,65 @@
+import React from 'react';
+import { NavLink } from 'react-router-dom';
+
+const navigationGroups = [
+    {
+        label: 'Dashboard',
+        items: [{ label: 'Home', path: '/', icon: '⌂' }],
+    },
+    {
+        label: 'Inside Board',
+        items: [
+            { label: 'Orders', path: '/orders', icon: '📦' },
+            { label: 'Companies', path: '/companies', icon: '🏢' },
+            { label: 'Categories', path: '/categories', icon: '🏷' },
+            { label: 'Offers', path: '/offers', icon: '🎁' },
+        ],
+    },
+    {
+        label: 'Blocked Area',
+        items: [{ label: 'Users', path: '/users', icon: '👤' }],
+    },
+];
+
+const Sidebar: React.FC = () => {
+    return (
+        <aside className="sidebar">
+            <div>
+                <h2 className="sidebar-brand">
+                    Clean<span>4</span>
+                </h2>
+
+                <nav aria-label="Sidebar Navigation" className="sidebar-nav">
+                    {navigationGroups.map((group) => (
+                        <div key={group.label} className="sidebar-group">
+                            <p className="sidebar-group-label">{group.label}</p>
+                            <ul className="sidebar-list">
+                                {group.items.map((item) => (
+                                    <li key={item.path} className="sidebar-item">
+                                        <NavLink
+                                            to={item.path}
+                                            end={item.path === '/'}
+                                            className={({ isActive }) =>
+                                                isActive
+                                                    ? 'sidebar-link sidebar-link-active'
+                                                    : 'sidebar-link'
+                                            }
+                                        >
+                                            <span className="sidebar-link-icon" aria-hidden="true">
+                                                {item.icon}
+                                            </span>
+                                            <span>{item.label}</span>
+                                        </NavLink>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    ))}
+                </nav>
+            </div>
+
+        </aside>
+    );
+};
+
+export default Sidebar;

@@ -1,0 +1,45 @@
+/react-ts-dashboard/react-ts-dashboard/src/components/Dashboard/Dashboard.module.css
+
+.dashboard {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    background-color: #f4f4f4;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.dashboardHeader {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.dashboardContent {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.metricCard {
+    background-color: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.metricCard:hover {
+    transform: scale(1.05);
+}
+
+.metricTitle {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.metricValue {
+    font-size: 24px;
+    font-weight: bold;
+}

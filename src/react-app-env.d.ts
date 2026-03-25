@@ -1,0 +1,1 @@
+// This file provides TypeScript definitions for the React app environment.
